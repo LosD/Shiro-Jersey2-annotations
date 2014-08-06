@@ -12,80 +12,82 @@ All annotations except RequiresAuthentication implies RequireUser: If no user is
 To make it possible to override all annotations, new annotations (RequiresNo*) has been added. These simply cancels the class annotation for the method.
 
 RequiresRoles example:
+```Java
+package dk.kroeger.dennis.shiro.jersey.example;
 
-	package dk.kroeger.dennis.shiro.jersey.example;
-	
-	import org.apache.shiro.authz.annotation.RequiresRoles; 
-	import dk.kroeger.dennis.shiro.jersey.RequiresNoRoles; 
-	import org.example.Example;
-	import javax.ws.rs.*;
-	import javax.ejb.Singleton;
-	import java.util.Collection;
-	import java.util.Map;
-	import java.lang.String;
-	
-	@Path("/example")
-	@RequiresRoles("role,example")
-	@Singleton
-	public class ExampleResource {
-		Map<String, Example> examples = new ConcurrentHashMap<>();
-	
-		// Require only the "role" role.
-		@RequiresRoles("role");
-		@GET
-		@Produces("application/json")
-		public Collection<Example> listExamples(){
-			return examples.values();
-		}
-		
-		// Do not require any specific roles.
-		@RequiresNoRoles
-		@GET
-		@Path("{id}")
-		public Example example(@PathParam String id){
-			return examples.get(id);
-		}
+import org.apache.shiro.authz.annotation.RequiresRoles; 
+import dk.kroeger.dennis.shiro.jersey.RequiresNoRoles; 
+import org.example.Example;
+import javax.ws.rs.*;
+import javax.ejb.Singleton;
+import java.util.Collection;
+import java.util.Map;
+import java.lang.String;
 
-		// Same requirements as class.
-		@PUT
-		@Path("{id}")
-		public void add(@PathParam String id, Example example){
-			examples.put(id, example);
-		}
-		
-		// Requires another role
-		@RequiresRoles("delete");
-		@DELETE
-		@Path("{id}")
-		public void delete(@PathParam String id){
-			examples.remove(id);
-		}
+@Path("/example")
+@RequiresRoles("role,example")
+@Singleton
+public class ExampleResource {
+	Map<String, Example> examples = new ConcurrentHashMap<>();
+
+	// Require only the "role" role.
+	@RequiresRoles("role");
+	@GET
+	@Produces("application/json")
+	public Collection<Example> listExamples(){
+		return examples.values();
 	}
 	
+	// Do not require any specific roles.
+	@RequiresNoRoles
+	@GET
+	@Path("{id}")
+	public Example example(@PathParam String id){
+		return examples.get(id);
+	}
+
+	// Same requirements as class.
+	@PUT
+	@Path("{id}")
+	public void add(@PathParam String id, Example example){
+		examples.put(id, example);
+	}
+	
+	// Requires another role
+	@RequiresRoles("delete");
+	@DELETE
+	@Path("{id}")
+	public void delete(@PathParam String id){
+		examples.remove(id);
+	}
+}
+```
+
 Adding to Application:
+```Java
+package dk.kroeger.dennis.shiro.jersey.example;
 
-	package dk.kroeger.dennis.shiro.jersey.example;
-	
-	import dk.kroeger.dennis.shiro.jersey.ShiroDynamicFeature;
-	
-	import javax.ws.rs.ApplicationPath;
-	import javax.ws.rs.core.Application;
-	import java.util.HashSet;
-	import java.util.Set;
-	
-	@ApplicationPath("/rest")
-	public class ExampleApplication extends Application {
-		@Override
-		public Set<Class<?>> getClasses() {
-			final Set<Class<?>> classes = new HashSet<>();
-			classes.add(ShiroDynamicFeature.class);
-			return classes;
-		}
-	
-		@Override
-		public Set<Object> getSingletons() {
-			final Set<Object> singletons = new HashSet<>();
-			singletons.add(new ExampleResource());
-			return singletons;
-		}
+import dk.kroeger.dennis.shiro.jersey.ShiroDynamicFeature;
+
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
+import java.util.HashSet;
+import java.util.Set;
+
+@ApplicationPath("/rest")
+public class ExampleApplication extends Application {
+	@Override
+	public Set<Class<?>> getClasses() {
+		final Set<Class<?>> classes = new HashSet<>();
+		classes.add(ShiroDynamicFeature.class);
+		return classes;
 	}
+
+	@Override
+	public Set<Object> getSingletons() {
+		final Set<Object> singletons = new HashSet<>();
+		singletons.add(new ExampleResource());
+		return singletons;
+	}
+}
+```
