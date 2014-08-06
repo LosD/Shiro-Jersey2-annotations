@@ -42,6 +42,7 @@ public class ExampleResource {
 	@RequiresNoRoles
 	@GET
 	@Path("{id}")
+	@Produces("application/json")
 	public Example example(@PathParam String id){
 		return examples.get(id);
 	}
@@ -49,6 +50,7 @@ public class ExampleResource {
 	// Same requirements as class.
 	@PUT
 	@Path("{id}")
+	@Consumes("application/json")
 	public void add(@PathParam String id, Example example){
 		examples.put(id, example);
 	}
