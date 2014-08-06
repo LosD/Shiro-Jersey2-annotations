@@ -1,12 +1,11 @@
 package dk.kroeger.dennis.shiro.jersey.filters;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.subject.Subject;
 
-import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.core.Response;
 import java.io.IOException;
 
 /**
@@ -36,9 +35,11 @@ abstract class ShiroContainerRequestFilter implements ContainerRequestFilter {
 	public void filter(ContainerRequestContext containerRequestContext) throws IOException {
 		Subject subject = SecurityUtils.getSubject();
 		if (!checkAuthentication(subject)) {
-			throw new UnauthorizedException();
+			containerRequestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity(
+					"Unauthorized").build());
 		} else if (!checkAccess(subject)) {
-			throw new ForbiddenException();
+			containerRequestContext.abortWith(Response.status(Response.Status.FORBIDDEN).entity(
+					"Forbidden").build());
 		}
 	}
 
