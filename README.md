@@ -12,6 +12,7 @@ All annotations except RequiresAuthentication implies RequireUser: If no user is
 To make it possible to override all annotations, new annotations (RequiresNo*) has been added. These simply cancels the class annotation for the method.
 
 RequiresRoles example:
+
 ```Java
 package dk.kroeger.dennis.shiro.jersey.example;
 
@@ -66,6 +67,7 @@ public class ExampleResource {
 ```
 
 Adding to Application:
+
 ```Java
 package dk.kroeger.dennis.shiro.jersey.example;
 
