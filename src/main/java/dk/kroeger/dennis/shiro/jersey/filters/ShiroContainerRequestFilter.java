@@ -6,7 +6,6 @@ import org.apache.shiro.subject.Subject;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
 
 /**
  * Common base class for all request filters.
@@ -32,7 +31,7 @@ abstract class ShiroContainerRequestFilter implements ContainerRequestFilter {
 	}
 
 	@Override
-	public void filter(ContainerRequestContext containerRequestContext) throws IOException {
+	public void filter(ContainerRequestContext containerRequestContext) {
 		Subject subject = SecurityUtils.getSubject();
 		if (!checkAuthentication(subject)) {
 			containerRequestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity(
