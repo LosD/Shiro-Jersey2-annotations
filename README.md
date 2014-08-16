@@ -26,7 +26,7 @@ import java.util.Map;
 import java.lang.String;
 
 @Path("/example")
-@RequiresRoles("role,example")
+@RequiresRoles({"role","example"})
 @Singleton
 public class ExampleResource {
 	Map<String, Example> examples = new ConcurrentHashMap<>();
